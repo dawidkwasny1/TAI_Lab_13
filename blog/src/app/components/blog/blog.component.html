@@ -1,0 +1,14 @@
+
+<selectize></selectize>
+<div class="row">
+  <div class="col-sm-4" style="margin-top: 20px" *ngFor="let item of items$ | filter: filterText">
+    <blog-item [title]="item.title" [id]="item.id" [image]="item.url" [text]="item.content">
+    </blog-item>
+  </div>
+</div>
+
+<div class="scroll">
+    <button class="btn btn-success" (click) = 'goToTop()'>
+        <i class="fa fa-arrow-circle-up" aria-hidden="true"> Do góry</i>
+    </button>
+</div>

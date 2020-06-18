@@ -1,0 +1,8 @@
+<html>
+    <button class="btn btn-primary" style="margin-top: 10px; margin-bottom: 10px;" [routerLink]="['/add-post']">Dodaj post</button>
+    <search-bar (name)="getName($event)"></search-bar>
+    <blog [filterText]="filterText"></blog>
+    <footer class="footer">
+        <p>Copyrights &copy; | Dawid Kwasny 2020</p>
+    </footer>
+</html>
