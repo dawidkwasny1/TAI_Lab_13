@@ -9,12 +9,9 @@
       <a class="nav-link active" [routerLink]="['/contact']">Kontakt</a>
     </li>
     <li class="nav-item">
-      <button class="btn btn-primary" [routerLink]="['/signup']" *ngIf="!authService.currentUser">Zarejestruj</button>
+      <button class="btn btn-primary" [routerLink]="['/login']" *ngIf="!authService.isUserLoggedIn()">Zaloguj</button>
     </li>
     <li class="nav-item">
-      <button class="btn btn-primary" [routerLink]="['/login']" *ngIf="!authService.currentUser">Zaloguj</button>
-    </li>
-    <li class="nav-item">
-      <button class="btn btn-primary" (click)="logOut()" *ngIf="authService.currentUser">Wyloguj</button>
+      <button class="btn btn-primary" (click)="logOut()" *ngIf="authService.isUserLoggedIn()">Wyloguj</button>
     </li>
   </ul>

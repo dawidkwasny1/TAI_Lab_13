@@ -9,13 +9,10 @@ import {Router} from "@angular/router";
 })
 export class LoginComponent implements OnInit {
 
-  private logged;
-  private logout;
-
-  public credentials = {
-    login: '',
-    password: ''
-  };
+  username='';
+  password='';
+  errorMessage='Invalid Credentials';
+  invalidLogin=false;
 
   constructor(public authService: AuthService, private router: Router) {
   }
@@ -23,24 +20,18 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {
   }
 
-
-  signIn() {
-    return this.authService.authenticate(this.credentials).subscribe((result) => {
-      if (!result) {
-        this.logged = false;
-      } else {
-        this.logout = false;
-        this.credentials = {
-          login: '',
-          password: ''
-        };
-        this.router.navigate(['/']);
-      }
-    });
-  }
-
-  isValid() {
-    return (this.credentials.login !== '' && this.credentials.password !== '');
-  }
+  handleBasicAuthLogin() {
+    this.authService.executeAuthenticationService(this.username, this.password)
+      .subscribe(
+        data => {
+          this.router.navigate(['blog']);
+            this.invalidLogin = false;
+        },
+        error => {
+          console.log(error);
+          this.invalidLogin = true;
+        }
+      );
+  }   
 
 }

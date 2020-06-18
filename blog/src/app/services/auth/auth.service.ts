@@ -1,65 +1,56 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {JwtHelper} from 'angular2-jwt';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {map} from 'rxjs/operators';
-import {Token} from '../../models/token';
 
+export const TOKEN='token';
+export const AUTHENTICATED_USER = 'authenticatedUser';
 
 @Injectable()
 export class AuthService {
 
-   private url = 'https://app-blog-tai.herokuapp.com/api';
-
    constructor(private http: HttpClient) {}
 
-   authenticate(credentials) {
-      return this.http.post(this.url + '/user/auth', {
-   	   login: credentials.login,
-   	   password: credentials.password
-      }).pipe(
-         map((result: Token) => {
-   	      if (result && result.token) {
-       	      localStorage.setItem('token', result.token);
-               return true;
-            }
-            return false;
+   executeAuthenticationService(username, password) {
+      const basicAuthHeaderString = 'Basic ' + window.btoa(username + ':' + password);
+
+      const httpOptions = {
+         headers: new HttpHeaders({
+            'Content-Type': 'application/json',
+            'Authorization': 'Basic ' + btoa(username + ':' + password)
          })
-      );
-   }
-   
-   createOrUpdate(credentials) {
-      return this.http.post(this.url + '/user/create', credentials);
-   }
-   
-   logout() {
-      return this.http.delete(this.url + '/user/logout/' + this.currentUser.userId)
-         .pipe(
-            map(() => {
-               localStorage.removeItem('token');
-            })
+      };
+
+      return this.http.get(
+         `http://localhost:8080/basicauth`, httpOptions).pipe(
+            map(
+               data => {
+                  sessionStorage.setItem(AUTHENTICATED_USER, username);
+                  sessionStorage.setItem(TOKEN, basicAuthHeaderString);
+                  return data;
+               }
+            )
          );
    }
-   
-   isLoggedIn() {
-      const jwtHelper = new JwtHelper();
-      const token = localStorage.getItem('token');
-      if (!token) {
-        return false;
-      }
-      return !(jwtHelper.isTokenExpired(token));
-   }
-   
-   get currentUser() {
-      const token = this.getToken();
-      if (!token) {
-        return null;
-      }
 
-      return new JwtHelper().decodeToken(token);
+   getAuthenticatedUser() {
+      return sessionStorage.getItem(AUTHENTICATED_USER);
    }
-   
-   getToken() {
-      return localStorage.getItem('token');
+
+   getAuthenticatedToken() {
+      if(this.getAuthenticatedUser()) {
+         return sessionStorage.getItem(TOKEN);
+      }
    }
+
+   isUserLoggedIn() {
+      const user = sessionStorage.getItem(AUTHENTICATED_USER);
+      return !(user === null);
+   }
+
+   logout() {
+      sessionStorage.removeItem(AUTHENTICATED_USER);
+      sessionStorage.removeItem(TOKEN);
+   }
+
 }
    

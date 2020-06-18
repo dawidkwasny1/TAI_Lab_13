@@ -20,8 +20,8 @@ export class AddPostComponent implements OnInit {
     ngOnInit() {
     }
   
-    save() {
-      this.dataService.createOrUpdate(this.post).subscribe(f => {
+    onSubmit() {
+      this.dataService.createPost(this.post).subscribe( (post) => {
         this.router.navigate(['/blog'])
       })
     }
